@@ -1,0 +1,32 @@
+{
+    "name": "dashmedia/srcset",
+    "description": "",
+    "type": "modx-package",
+    "keywords": ["modx", "srcset"],
+    "homepage": "https://github.com/dashmedia/srcset",
+    "license": "GPL-2.0+",
+    "authors": [
+        {
+            "name": "Jason Carney",
+            "email": "jason@dashmedia.com.au",
+            "homepage" : "https://dash.marketing/"
+        }        
+    ],
+    "support": {
+        "issues": "https://github.com/dashmedia/srcset/issues",
+        "source": "https://github.com/dashmedia/srcset.git"
+    },    
+    "require": {
+        "php": ">=5.3"
+    },
+    "autoload": {
+        "classmap":["model/"]
+    },
+    "extra": {
+        "package_name": "SrcSet",
+        "namespace": "srcset",
+        "version": "1.0.0",
+        "release": "pl",
+        "category":"Utility"
+    }
+}
