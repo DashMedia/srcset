@@ -13,5 +13,26 @@ return array(
 		'namespace' => 'srcset',
 		'area' 		=> 'srcset:default'
     ),
+    array(
+        'key'  		=>     'srcset.min_2x_ratio',
+        'value'		=>     '2',
+        'xtype'		=>     'textfield',
+        'namespace' => 'srcset',
+        'area' 		=> 'srcset:default'
+    ),
+    array(
+        'key'  		=>     'srcset.compression_1x',
+        'value'		=>     '90',
+        'xtype'		=>     'textfield',
+        'namespace' => 'srcset',
+        'area' 		=> 'srcset:default'
+    ),
+    array(
+        'key'  		=>     'srcset.compression_2x',
+        'value'		=>     '40',
+        'xtype'		=>     'textfield',
+        'namespace' => 'srcset',
+        'area' 		=> 'srcset:default'
+    ),
 );
 /*EOF*/

@@ -40,6 +40,16 @@ class SrcSet
     private $processedOptions;
 
     /**
+     * @var array $imageSize[0] = width, $imageSize[1] = height
+     */
+    private $imageSize;
+    private $thumbSnippet;
+
+    private $min2xRatio;
+    private $compression1x;
+    private $compression2x;
+
+    /**
      * SrcSet constructor.
      * @param modX $modx
      * @param array $scriptProperties
@@ -48,8 +58,10 @@ class SrcSet
     {
         $this->modx = $modx;
         $this->scriptProperties = $scriptProperties;
-
-        $this->processOptions();
+        $this->thumbSnippet = $modx->getOption('srcset.thumbnail_snippet');
+        $this->min2xRatio = floatval($modx->getOption('srcset.min_2x_ratio'));
+        $this->compression1x = intval($modx->getOption('srcset.$compression1x'));
+        $this->compression2x = intval($modx->getOption('srcset.$compression2x'));
     }
 
     /**
@@ -57,6 +69,27 @@ class SrcSet
      */
     public function getSrc(){
         $srcString = '';
+        $this->processOptions();
+
+        if(empty($this->processedOptions['w'])&& empty($this->processedOptions['h'])){
+            // no valid reference dimension, return original
+            return $this->input;
+        }
+
+//        $this->imageSize = getimagesize($this->input);
+
+        //check if we're dealing with an imagePlus tv
+        if(!empty($this->tvName)){
+            $inputTv = $this->modx->getObject('modTemplateVar', array('name'=>$this->tvName));
+
+            if(!empty($inputTv) && $inputTv->get('type') == 'imageplus'){
+                 $this->processImagePlus($inputTv);
+            }
+        }
+
+        $this->processImageString();
+
+
         return $srcString;
     }
 
@@ -81,7 +114,7 @@ class SrcSet
 
         //default options
         $this->processedOptions = array(
-            'q' => 90
+            'q' => $this->compression1x
         );
 
         $options = $this->modx->getOption('options', $this->scriptProperties);
@@ -93,5 +126,87 @@ class SrcSet
             }
         }
 
+    }
+
+
+    /**
+     * @param modTemplateVar $inputTv
+     */
+    private function processImagePlus($inputTv){
+        $tvValue = json_decode($inputTv->getValue($this->id));
+        if(!empty($tvValue) && !empty($tvValue->sourveImg->src)){
+            //valid image+ variable
+            $this->imageSize = array(
+                $tvValue->crop->width,
+                $tvValue->crop->height
+            );
+        }
+
+    }
+
+    private function processImageString(){
+        $srcStrings = array();
+
+        $this->imageSize = getimagesize($this->input);
+        $snippetOptions = array(
+            'input' => $this->input
+        );
+
+        $optionStrings = $this->getOptionStrings();
+
+        $snippetOptions['options'] = $optionStrings;
+
+        $srcStrings['x1'] = $this->modx->runSnippet($this->thumbSnippet, $snippetOptions);
+
+        if($this->is2x()){
+            $options2x = $this->get2xOptions();
+            $optionStrings = $this->getOptionStrings($options2x);
+
+            $snippetOptions['options'] = $optionStrings;
+
+            $srcStrings['x2'] = $modx->runSnippet($this->thumbSnippet, $snippetOptions);
+        }
+
+        return $srcStrings;
+    }
+
+    private function get2xOptions(){
+        $options = $this->processedOptions;
+        if(isset($options['w'])){
+            $options['w'] *= 2;
+        }
+        if(isset($options['h'])){
+            $options['h'] *= 2;
+        }
+        $options['q'] = $this->compression2x;
+        return $options;
+    }
+
+    private function getOptionStrings($options = null){
+        if(is_null($options)){
+            $options = $this->processedOptions;
+        }
+        $optionStrings = array();
+        foreach ($options as $option => $value) {
+            $optionStrings[] = "{$option}={$value}";
+        }
+        return implode('&',$optionStrings);
+    }
+
+    private function is2x(){
+        $is2x = true;
+        if(!empty($this->processedOptions['w'])){
+            $this->processedOptions['w'] = intval($this->processedOptions['w']);
+            if($this->imageSize[0] / $this->processedOptions['w'] < $this->min2xRatio){
+                $is2x = false;
+            }
+        }
+        if(!empty($this->processedOptions['h'])){
+            $this->processedOptions['h'] = intval($this->processedOptions['h']);
+            if($this->imageSize[1] / $this->processedOptions['h'] < $this->min2xRatio){
+                $is2x = false;
+            }
+        }
+        return $is2x;
     }
 }
