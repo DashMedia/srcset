@@ -1,12 +1,5 @@
 <?php
 
-/**
- * Created by PhpStorm.
- * User: jasoncarney
- * Date: 7/12/16
- * Time: 4:37 PM
- *
- */
 class SrcSet
 {
 
@@ -68,9 +61,9 @@ class SrcSet
      * @return string The src value containing srcset attributes for the given image
      */
     public function getSrc(){
-        $srcString = '';
+        $srcStrings = null;
+        $output = '';
         $this->processOptions();
-
         if(empty($this->processedOptions['w'])&& empty($this->processedOptions['h'])){
             // no valid reference dimension, return original
             return $this->input;
@@ -83,14 +76,20 @@ class SrcSet
             $inputTv = $this->modx->getObject('modTemplateVar', array('name'=>$this->tvName));
 
             if(!empty($inputTv) && $inputTv->get('type') == 'imageplus'){
-                 $this->processImagePlus($inputTv);
+                 $srcStrings = $this->processImagePlus($inputTv);
             }
         }
 
-        $this->processImageString();
+        if(!is_array($srcStrings)){
+            $srcStrings = $this->processImageString();
+        }
 
-
-        return $srcString;
+        //markup contains leading and trailing double quotes
+        $output = $srcStrings['x1'];
+        if(isset($srcStrings['x2'])){
+            $output .= "\" srcset=\"{$srcStrings['x2']} 2x";
+        }
+        return $output;
     }
 
     /**
@@ -112,6 +111,7 @@ class SrcSet
         //override with input value (output modifier usage)
         $this->input = $this->modx->getOption('input', $this->scriptProperties, $this->input);
 
+        $this->input = ltrim($this->input, '/\\');
         //default options
         $this->processedOptions = array(
             'q' => $this->compression1x
@@ -131,17 +131,33 @@ class SrcSet
 
     /**
      * @param modTemplateVar $inputTv
+     * @return array|null SrcStrings
      */
     private function processImagePlus($inputTv){
+        $output = null;
         $tvValue = json_decode($inputTv->getValue($this->id));
-        if(!empty($tvValue) && !empty($tvValue->sourveImg->src)){
+        if(!empty($tvValue) && !empty($tvValue->sourceImg->src)){
             //valid image+ variable
+            $output = array();
             $this->imageSize = array(
                 $tvValue->crop->width,
                 $tvValue->crop->height
             );
-        }
+            $imagePlusOptions = array(
+                'tvname'=> $inputTv->get('name'),
+                'type'=>'thumb',
+                'docid'=>$this->id
+            );
+            $imagePlusOptions['options'] = $this->getOptionStrings();
+            $output['x1'] = $this->modx->runSnippet('ImagePlus', $imagePlusOptions);
+            if($this->is2x()){
+                $options2x = $this->get2xOptions();
+                $imagePlusOptions['options'] = $this->getOptionStrings($options2x);
 
+                $output['x2'] = $this->modx->runSnippet('ImagePlus', $imagePlusOptions);
+            }
+        }
+        return $output;
     }
 
     private function processImageString(){
@@ -164,7 +180,7 @@ class SrcSet
 
             $snippetOptions['options'] = $optionStrings;
 
-            $srcStrings['x2'] = $modx->runSnippet($this->thumbSnippet, $snippetOptions);
+            $srcStrings['x2'] = $this->modx->runSnippet($this->thumbSnippet, $snippetOptions);
         }
 
         return $srcStrings;

@@ -1,0 +1,9 @@
+Changelog for srcset
+
+srcset 0.1.1-beta
+---------------------------------
+- Fix for image vars with a leading slash (simpleupload)
+
+srcset 0.1.0-beta
+---------------------------------
+- Initial release

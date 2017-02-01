@@ -23,10 +23,10 @@
         "classmap":["model/"]
     },
     "extra": {
-        "package_name": "SrcSet",
+        "package_name": "srcset",
         "namespace": "srcset",
-        "version": "1.0.0",
-        "release": "pl",
+        "version": "0.1.1",
+        "release": "beta",
         "category":"Utility"
     }
 }
