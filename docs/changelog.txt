@@ -1,5 +1,9 @@
 Changelog for srcset
 
+srcset 0.1.2-beta
+---------------------------------
+- Fix for spaces in image url's even after being processed through thumbnail snippet
+
 srcset 0.1.1-beta
 ---------------------------------
 - Fix for image vars with a leading slash (simpleupload)

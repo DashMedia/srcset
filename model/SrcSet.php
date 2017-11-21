@@ -84,6 +84,10 @@ class SrcSet
             $srcStrings = $this->processImageString();
         }
 
+        foreach($srcStrings as &$imageString){
+          $imageString = str_replace(' ', '%20', $imageString);
+        }
+
         //markup contains leading and trailing double quotes
         $output = $srcStrings['x1'];
         if(isset($srcStrings['x2'])){
