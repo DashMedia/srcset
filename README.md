@@ -16,8 +16,8 @@ SrcSet aims to support ImagePlus, so far everything I've tried with ImagePlus an
 <img src="[[srcset? &image=`path/to/iamge.jpg` &w=`200`]]">
 ```
 
-Author: Jason <jason@dashmedia.com.au>
-Copyright 2017
+Author: Jason (JayCarney), Jonathan (jonathanhaslett)
+Copyright 2018
 
 Official Documentation: https://github.com/DashMedia/srcset
 

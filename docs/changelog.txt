@@ -1,5 +1,9 @@
 Changelog for srcset
 
+srcset 0.1.3-beta
+---------------------------------
+- Prevent the failed processing of images when the input is empty
+
 srcset 0.1.2-beta
 ---------------------------------
 - Fix for spaces in image url's even after being processed through thumbnail snippet

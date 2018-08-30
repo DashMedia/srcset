@@ -1,21 +1,21 @@
 {
     "name": "dashmedia/srcset",
-    "description": "",
+    "description": "SrcSet is intended for use as an output modifier to easily generate a 1x and 2x version of images using the srcset attribute.",
     "type": "modx-package",
     "keywords": ["modx", "srcset"],
     "homepage": "https://github.com/dashmedia/srcset",
     "license": "GPL-2.0+",
     "authors": [
         {
-            "name": "Jason Carney",
-            "email": "jason@dashmedia.com.au",
+            "name": "Jason Carney, Jonathan Haslett",
+            "email": "jon@dashmedia.com.au",
             "homepage" : "https://dash.marketing/"
-        }        
+        }
     ],
     "support": {
         "issues": "https://github.com/dashmedia/srcset/issues",
         "source": "https://github.com/dashmedia/srcset.git"
-    },    
+    },
     "require": {
         "php": ">=5.3"
     },
@@ -25,7 +25,7 @@
     "extra": {
         "package_name": "srcset",
         "namespace": "srcset",
-        "version": "0.1.2",
+        "version": "0.1.3",
         "release": "beta",
         "category":"Utility"
     }
