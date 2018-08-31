@@ -27,6 +27,8 @@
         "namespace": "srcset",
         "version": "0.1.3",
         "release": "beta",
-        "category":"Utility"
+        "category":"Utility",
+        "docs_path" : "docs/",
+        "seeds_path": ["model/seeds/"]
     }
 }
